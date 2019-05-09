@@ -15,8 +15,8 @@ work without SVN working copies, and maybe ever with a bare GIT repo.
     svnExport.pl [GIT-SVN-push-root]
 
     GIT-SVN-push-root is a directory which should be created as per the
-    "Installation" section below.  This defaults to
-    "/export/home/javadev/gitsync" for historical reasons.
+    "Installation" section below.  
+    
 
 
 # Installation
@@ -25,7 +25,7 @@ work without SVN working copies, and maybe ever with a bare GIT repo.
 
         $ mkdir -p /export/git-svn-push
 
-2. Modify svnExport.pl to point at that directory by editing line 22 to say:
+2. Modify svnExport.pl to point at that directory by editing line 22 to say or parse it as first argument:
 
         $ my $SYNC_BASE="/export/git-svn-push";
 

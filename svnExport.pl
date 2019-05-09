@@ -15,12 +15,13 @@
 # limitations under the License.
 
 use strict;
+use warnings;
 use File::Path;
 use File::Basename;
 use FileHandle;
 
 # SYNC_BASE can be overridden by passing it as the first argument
-my $SYNC_BASE="/export/home/javadev/gitsync";
+my $SYNC_BASE;
 my $GIT_ROOT;
 my $SVN_ROOT;
 my $COMMIT_MESG;
@@ -71,7 +72,8 @@ sub globmatch {
 
 # globinsert("abc*ghi", "def") == "abcdefghi"
 sub globinsert {
-	my ($_, $text) = @_;
+    my $text;
+	($_, $text) = @_;
 	s/\*/$text/;
 	return $_;
 }
@@ -92,7 +94,7 @@ sub branch2ref {
 sub geturlforbranch
 {
 	my ($branch) = @_;
-	if (substr $SVN_REPO_URL, -1, 1 == "/") {
+	if (substr $SVN_REPO_URL, -1, 1 eq "/") {
 		die("Don't put a / at the end of SVN_REPO_URL (" . $SVN_REPO_URL . ")");
 	}
 
@@ -310,7 +312,7 @@ sub syncsvnfiles
 		chomp($path);
 		if ("$path" ne "?" )
 		{
-			$path =~ s/\?\s+(.*)/\1/;
+			$path =~ s/\?\s+(.*)/$1/;
 			checked_system("svn add \"$path\"") == 0
 				or die("Could not add files to svn index");
 		}
@@ -380,7 +382,7 @@ sub processbranch
 			if($_ =~ m/^Committed/)
 			{
 				#Committed rxxxx
-				$_ =~ s/Committed r([0-9]*)/\1/;
+				$_ =~ s/Committed r([0-9]*)/$1/;
 				open(REVCACHE, ">>$SVN_ROOT/$project.revcache");
 				if ($dry_run) {
 					print "Would append '$_ $branch $revision' to $SVN_ROOT/$project.revcache\n";
@@ -474,7 +476,7 @@ sub doimport
 	{
 		my $project = $projectconfig;
 		my %config;
-		$project =~ s/(.*)\.config/\1/;
+		$project =~ s/(.*)\.config/$1/;
 
 		# Lock the project, one at a time please
 		open(LCK, ">${project}.lock");
@@ -503,4 +505,5 @@ sub doimport
 }
 
 doimport;
+
 
